@@ -14,34 +14,52 @@ public class TheHills : MonoBehaviour
     private MeshCollider myCollider;
 
     public float seed = 0f;
+    private Vector3[] vertices;
 
 
     // Start is called before the first frame update
     void Start()
     {
+      
+
+       //generatePerlinHills();
+    }
+
+    void grabComponents()
+    {
+
         myMeshFilter = this.GetComponent<MeshFilter>().mesh;
 
         myCollider = this.GetComponent<MeshCollider>();
 
-        generatePerlinHills();
     }
 
 
-    void generatePerlinHills()
+    public void generatePerlinHills()
     {
-        Vector3[] vertices = myMeshFilter.vertices;
 
-        float px = 0;
-        float pz = 0;
+        if (myMeshFilter == null)
+
+            grabComponents();
 
 
-        for (int i= 0; i < vertices.Length; i++)
+        vertices = myMeshFilter.vertices;
+
+        float pX = 0;
+        float pZ = 0;
+
+
+        for (int i = 0; i < vertices.Length; i++)
         {
-            px = (this.transform.position.x + vertices[i].x) / gradient + seed;
 
-            pz = (this.transform.position.z + vertices[i].z) / gradient;
+            pX = (1000000 + this.transform.position.x + vertices[i].x *
+                this.transform.lossyScale.x) / gradient + seed;
 
-            vertices[i].y = Mathf.PerlinNoise(px, pz) * height;
+            pZ = (1000000 + this.transform.position.z + vertices[i].z *
+                this.transform.lossyScale.z) / gradient + seed;
+
+
+            vertices[i].y = Mathf.PerlinNoise(pX, pZ) * height;
 
         }
 
@@ -56,13 +74,13 @@ public class TheHills : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            seed += 0.1f;
+            seed += 0.3f;
 
             generatePerlinHills();
 
         }
-        
+
     }
 }
